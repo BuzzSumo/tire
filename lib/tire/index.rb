@@ -429,6 +429,8 @@ module Tire
 
       payload = { :doc => document }
       payload.update( :query => query ) if query
+      payload["highlight"] = {"fields" => {"title" => {}, "html_source" => {}, "popular_hash_tags" => {}}  }
+      payload["size"] = 1000
 
       @response = Configuration.client.get "#{url}/#{type}/_percolate", MultiJson.encode(payload)
       MultiJson.decode(@response.body)['matches']
