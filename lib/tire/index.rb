@@ -429,7 +429,7 @@ module Tire
 
       payload = { :doc => document }
       payload.update( :query => query ) if query
-      payload["highlight"] = {"order": "score", "pre_tags" => ["<strong class='highlight'>"], "post_tags" => ["</strong>"], "fields" => {"title" => {}, "html_source" => {"fragment_size" => 150, "number_of_fragments" => 2}, "popular_hash_tags" => {}}  }
+      payload["highlight"] = {"order" => "score", "pre_tags" => ["<strong class='highlight'>"], "post_tags" => ["</strong>"], "fields" => {"title" => {}, "html_source" => {"fragment_size" => 150, "number_of_fragments" => 2}, "popular_hash_tags" => {}}  }
       payload["size"] = 1000
 
       @response = Configuration.client.get "#{url}/#{type}/_percolate", MultiJson.encode(payload)
