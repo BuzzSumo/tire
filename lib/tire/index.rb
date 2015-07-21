@@ -433,7 +433,20 @@ module Tire
       payload["size"] = 1000
 
       @response = Configuration.client.get "#{url}/#{type}/_percolate", MultiJson.encode(payload)
-      MultiJson.decode(@response.body)['matches']
+      json = MultiJson.decode(@response.body)
+      if(json["error"] != nil)
+        throw json["error"]
+      end
+
+      totalShards = json["_shards"]["total"] 
+      successfulShards = json["_shards"]["successful"]
+
+      if(totalShards != successfulShards)
+        failedShards = totalShards - successfulShards
+        throw "Number of shards that failed: #{failedShards}"
+      end
+      
+      json['matches']
 
     ensure
       curl = %Q|curl -X GET "#{url}/#{type}/_percolate?pretty" -d '#{MultiJson.encode(payload, :pretty => Configuration.pretty)}'|
