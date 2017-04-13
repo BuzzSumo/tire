@@ -224,8 +224,8 @@ module Tire
         @response = Configuration.client.post("#{url}/_bulk#{params_encoded}", payload.join("\n"))
         json = MultiJson.decode(@response.body)
 
-        if(json["error"] != nil)
-          throw json["error"]
+        if(json["errors"] != nil)
+          throw json["errors"]
         end
 
         raise RuntimeError, "#{@response.code} > #{@response.body}" if @response && @response.failure?
