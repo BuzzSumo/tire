@@ -221,7 +221,15 @@ module Tire
         params               = params.reject { |name,value| !value }
         params_encoded       = params.empty? ? '' : "?#{params.to_param}"
 
-        @response = Configuration.client.post("#{url}/_bulk#{params_encoded}", payload.join("\n"))
+        uri = Addressable::URI.parse(url)
+        
+        if(options[:port])
+          uri.port = options[:port]
+        end
+
+        postUrl = uri.to_s
+
+        @response = Configuration.client.post("#{postUrl}/_bulk#{params_encoded}", payload.join("\n"))
 
         raise RuntimeError, "#{@response.code} > #{@response.body}" if @response && @response.failure?
         @response
